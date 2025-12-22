@@ -1,7 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 #include <sys/wait.h>
+char *trim(char *str);
+
 
 int main(void)
 {
@@ -49,8 +52,8 @@ int main(void)
 
             if (execve(argv[0], argv, environ) == -1)
             {
-ع                printf("./shell: No such file or directory\n");
-                exit(EXIT_FAILURE);
+printf("./shell: No such file or directory\n");
+exit(EXIT_FAILURE);
             }
         }
         else
