@@ -31,6 +31,7 @@ int main(void)
     char *argv[2];
     pid_t pid;
     extern char **environ;
+    char *trimmed;
 
     while (1)
     {
@@ -48,7 +49,7 @@ int main(void)
         if (line[nread - 1] == '\n')
             line[nread - 1] = '\0';
 
-        char *trimmed = trim_line(line);
+        trimmed = trim_line(line);
         if (*trimmed == '\0')
             continue;
 
