@@ -23,15 +23,32 @@ char *trim_line(char *str)
     return start;
 }
 
-int main(void)
+int main(int argc, char **argv, char **env)
 {
     char *line = NULL;
     size_t len = 0;
     ssize_t nread;
-    char *argv[2];
+    char *args[2];
     pid_t pid;
     extern char **environ;
     char *trimmed;
+    FILE *fp;
+
+
+
+        if (argc == 2)
+        {
+        fp = fopen(argv[1], "r");
+        if (fp == NULL)
+        {
+        perror("./shell");
+        return(1);
+        }
+        }
+        else
+        {
+        fp = stdin;
+        }
 
     while (1)
     {
@@ -41,7 +58,8 @@ int main(void)
             fflush(stdout);
         }
 
-        nread = getline(&line, &len, stdin);
+        nread = getline(&line, &len, fp);
+        
         if (nread == -1)
             break;
         if (nread == 1)
@@ -62,9 +80,9 @@ int main(void)
 
         if (pid == 0)
         {
-            argv[0] = trimmed;
-            argv[1] = NULL;
-            if (execve(argv[0], argv, environ) == -1)
+            args[0] = trimmed;
+            args[1] = NULL;
+            if (execve(args[0], args, environ) == -1)
             {
                 printf("./shell: No such file or directory\n");
                 exit(EXIT_FAILURE);
