@@ -24,7 +24,7 @@ int main(void)
         if (nread == -1)
             break;
 
-        if (nread == 1)
+        if (line[0] == '\n' || line[0] == ' ' || line[0] == '\t')
             continue;
 
         if (line[nread - 1] == '\n')
@@ -44,7 +44,7 @@ int main(void)
 
             if (execve(argv[0], argv, environ) == -1)
             {
-                printf("./shell: No such file or directory\n");
+ع                printf("./shell: No such file or directory\n");
                 exit(EXIT_FAILURE);
             }
         }
