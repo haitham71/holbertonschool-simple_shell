@@ -3,8 +3,25 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/wait.h>
-char *trim(char *str);
 
+char *trim_line(char *str)
+{
+    char *start = str;
+    char *end;
+
+    while (*start == ' ' || *start == '\t')
+        start++;
+
+    if (*start == '\0')
+        return start;
+
+    end = start + strlen(start) - 1;
+    while (end > start && (*end == ' ' || *end == '\t'))
+        end--;
+
+    *(end + 1) = '\0';
+    return start;
+}
 
 int main(void)
 {
@@ -17,26 +34,23 @@ int main(void)
 
     while (1)
     {
-    if (isatty(STDIN_FILENO))
-{
-        printf("cisfun$ ");
-        fflush(stdout);
-}
-        nread = getline(&line, &len, stdin);
+        if (isatty(STDIN_FILENO))
+        {
+            printf("cisfun$ ");
+            fflush(stdout);
+        }
 
+        nread = getline(&line, &len, stdin);
         if (nread == -1)
             break;
-
-	if (nread == 1)
+        if (nread == 1)
             continue;
-
         if (line[nread - 1] == '\n')
             line[nread - 1] = '\0';
 
-	line = trim(line);
-
-	if (line[0] == '\0')
-    	    continue;
+        char *trimmed = trim_line(line);
+        if (*trimmed == '\0')
+            continue;
 
         pid = fork();
         if (pid == -1)
@@ -47,13 +61,12 @@ int main(void)
 
         if (pid == 0)
         {
-            argv[0] = line;
+            argv[0] = trimmed;
             argv[1] = NULL;
-
             if (execve(argv[0], argv, environ) == -1)
             {
-printf("./shell: No such file or directory\n");
-exit(EXIT_FAILURE);
+                printf("./shell: No such file or directory\n");
+                exit(EXIT_FAILURE);
             }
         }
         else
@@ -64,19 +77,4 @@ exit(EXIT_FAILURE);
 
     free(line);
     return 0;
-}
-
-
-
-char *trim(char *str)
-{
-    char *end;
-
-    while (*str == ' ' || *str == '\t') str++;
-    if (*str == 0) return str;
-
-    end = str + strlen(str) - 1;
-    while (end > str && (*end == ' ' || *end == '\t')) end--;
-    *(end + 1) = '\0';
-    return str;
 }
