@@ -82,7 +82,7 @@ int main(int argc, char **argv, char **env)
         {
             args[0] = trimmed;
             args[1] = NULL;
-            if (execve(args[0], args, environ) == -1)
+            if (execve(args[0], args, env) == -1)
             {
                 printf("./shell: No such file or directory\n");
                 exit(EXIT_FAILURE);
