@@ -4,30 +4,48 @@
 #include <string.h>
 #include <sys/wait.h>
 
-int main(void) {
+/**
+ * main - مفسر أوامر بسيط (Simple Shell)
+ * يستخدم getline للقراءة و execve للتنفيذ
+ */
+int main(void)
+{
+char *line = NULL;
+size_t len = 0;
+ssize_t nread;
 char *argv[] = {NULL, NULL};
 pid_t pid;
-char line[1024];
-
 while (1)
 {
 printf("cisfun$ ");
-
-fgets(line, sizeof(line), stdin);
-if (line == NULL)
+fflush(stdout);
+nread = getline(&line, &len, stdin);
+if (nread == -1)
 break;
-
-line[strlen(line) - 1] = '\0';
-
+if (nread == 1)
+continue;
+if (line[nread - 1] == '\n')
+line[nread - 1] = '\0';
 pid = fork();
-if (pid == 0) {
+if (pid == -1)
+{
+perror("fork failed");
+continue;
+}
+if (pid == 0)
+{
 argv[0] = line;
-execve(argv[0], argv, NULL);
+if (execve(argv[0], argv, NULL) == -1)
+{
+perror("./shell");
+exit(EXIT_FAILURE);
+}
 }
 else
 {
 wait(NULL);
 }
 }
-return 0;
+free(line);
+return (0);
 }
