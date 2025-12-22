@@ -24,6 +24,9 @@ int main(void)
         if (nread == -1)
             break;
 
+	if (nread == 1)
+	continue;
+
         if (line[0] == '\n' || line[0] == ' ' || line[0] == '\t')
             continue;
 
