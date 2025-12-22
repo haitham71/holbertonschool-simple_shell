@@ -30,7 +30,6 @@ int main(int argc, char **argv, char **env)
     ssize_t nread;
     char *args[2];
     pid_t pid;
-    extern char **environ;
     char *trimmed;
     FILE *fp;
 
