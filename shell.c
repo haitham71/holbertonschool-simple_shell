@@ -19,11 +19,8 @@ fp = get_input_stream(argc, argv);
 
 while (1)
 {
-if (fp == stdin && isatty(STDIN_FILENO))
-{
-printf("cisfun$ ");
-fflush(stdout);
-}
+    
+display_shell(fp);
 
 nread = getline(&line, &len, fp);
 if (nread == -1)
