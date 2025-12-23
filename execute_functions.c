@@ -14,8 +14,7 @@ void execute_command(char **args, char **env)
     pid_t pid;
     char *cmd_path;
 
-    /* تحقق من وجود الأمر أولاً */
-    cmd_path = find_command_path(args[0]);
+    cmd_path = find_command_path(args[0], env);
     if (!cmd_path)
     {
         fprintf(stderr, "./hsh: 1: %s: not found\n", args[0]);
@@ -32,14 +31,16 @@ void execute_command(char **args, char **env)
 
     if (pid == 0)
     {
-        execve(cmd_path, args, env);
-        fprintf(stderr, "./hsh: 1: %s: not found\n", args[0]);
-        free(cmd_path);
-        exit(127);
+        if (execve(cmd_path, args, env) == -1)
+        {
+            perror("execve");
+            exit(127);
+        }
     }
     else
     {
         wait(NULL);
     }
+
     free(cmd_path);
 }

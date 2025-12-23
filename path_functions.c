@@ -1,50 +1,41 @@
 #include "shell_headers.h"
-#include <sys/stat.h>
-#include <string.h>
-#include <stdlib.h>
-#include <unistd.h>
 
-/**
- * find_command_path - Returns full path of command if exists in PATH
- * @command: Command name
- *
- * Return: Full path string (malloc'd) or NULL if not found
- */
-char *find_command_path(char *command)
+/* Returns the full path of command if exists, else NULL */
+char *find_command_path(char *command, char **env)
 {
-    char *path_env = NULL;
-    char *path_dup, *dir, *full_path;
+    char *path_env = get_path_value(env);
+    char *path_copy, *dir;
     struct stat st;
+    char *full_path = NULL;
 
-    path_env = getenv("PATH");  // Allowed if checker يسمح، إذا لا راح نعدل
-    if (!path_env || path_env[0] == '\0')
-        return (NULL);
+    if (!path_env || command[0] == '/')
+    {
+        if (stat(command, &st) == 0)
+            return strdup(command);
+        return NULL;
+    }
 
-    path_dup = strdup(path_env);
-    if (!path_dup)
-        return (NULL);
+    path_copy = strdup(path_env);
+    if (!path_copy)
+        return NULL;
 
-    dir = strtok(path_dup, ":");
+    dir = strtok(path_copy, ":");
     while (dir)
     {
-        full_path = malloc(strlen(dir) + 1 + strlen(command) + 1);
+        full_path = malloc(strlen(dir) + strlen(command) + 2);
         if (!full_path)
-        {
-            free(path_dup);
-            return (NULL);
-        }
-        strcpy(full_path, dir);
-        strcat(full_path, "/");
-        strcat(full_path, command);
+            break;
+        sprintf(full_path, "%s/%s", dir, command);
 
         if (stat(full_path, &st) == 0)
         {
-            free(path_dup);
-            return (full_path);
+            free(path_copy);
+            return full_path;
         }
         free(full_path);
+        full_path = NULL;
         dir = strtok(NULL, ":");
     }
-    free(path_dup);
-    return (NULL);
+    free(path_copy);
+    return NULL;
 }
