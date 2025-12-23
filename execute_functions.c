@@ -6,34 +6,36 @@
  */
 void execute_command(char **args, char **env)
 {
-	pid_t pid;
-	char *cmd_path;
+    pid_t pid;
+    char *cmd_path;
 
-	cmd_path = find_command_path(args[0], env);
-	if (!cmd_path)
-	{
-		fprintf(stderr, "./hsh: 1: %s: not found\n", args[0]);
-		return;
-	}
+    /* تحقق من PATH قبل fork */
+    cmd_path = find_command_path(args[0]);
+    if (cmd_path == NULL)
+    {
+        fprintf(stderr, "./hsh: 1: %s: not found\n", args[0]);
+        /* set exit status */
+        if (args[0] != NULL)
+            exit(127);
+        return;
+    }
 
-	pid = fork();
-	if (pid == -1)
-	{
-		perror("fork");
-		free(cmd_path);
-		return;
-	}
+    pid = fork();
+    if (pid == -1)
+    {
+        perror("fork");
+        return;
+    }
 
-	if (pid == 0)
-	{
-		if (execve(cmd_path, args, env) == -1)
-		{
-			perror("./hsh");
-			exit(127);
-		}
-	}
-	else
-		wait(NULL);
-
-	free(cmd_path);
+    if (pid == 0)
+    {
+        /* Child */
+        if (execve(cmd_path, args, env) == -1)
+        {
+            fprintf(stderr, "./hsh: 1: %s: not found\n", args[0]);
+            exit(127);
+        }
+    }
+    else
+        wait(NULL);
 }
