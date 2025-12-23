@@ -19,10 +19,14 @@ FILE *fp;
 if (argc == 2)
 {
 fp = fopen(argv[1], "r");
-if (fp == NULL) { perror(argv[0]); return (1); }
+if (fp == NULL)
+{
+perror(argv[0]);
+return (1);
 }
-
-else fp = stdin;
+}
+else
+fp = stdin;
 
 while (1)
 {
@@ -33,7 +37,8 @@ fflush(stdout);
 }
 
 nread = getline(&line, &len, fp);
-if (nread == -1) break;
+if (nread == -1)
+break;
 
 if (line[nread - 1] == '\n') line[nread - 1] = '\0';
 
@@ -46,9 +51,11 @@ token = strtok(NULL, " \t");
 }
 args[i] = NULL;
 
-if (args[0] == NULL) continue;
+if (args[0] == NULL)
+continue;
 
 pid = fork();
+
 if (pid == 0)
 {
 if (execve(args[0], args, env) == -1)
@@ -57,7 +64,8 @@ fprintf(stderr, "./hsh: 1: %s: not found\n", args[0]);
 exit(127);
 }
 }
-else wait(NULL);
+else
+wait(NULL);
 }
 
 free(line);
