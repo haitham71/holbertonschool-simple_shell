@@ -9,12 +9,13 @@
 
 char *trim_line(char *str)
 {
-    char *start = str;
-    char *end;
-    while (*start == ' ' || *start == '\t') start++;
-    if (*start == '\0') return start;
-    end = start + strlen(start) - 1;
-    while (end > start && (*end == ' ' || *end == '\t')) end--;
-    *(end + 1) = '\0';
-    return start;
+char *start = str;
+char *end;
+
+while (*start == ' ' || *start == '\t') start++;
+if (*start == '\0') return start;
+end = start + strlen(start) - 1;
+while (end > start && (*end == ' ' || *end == '\t')) end--;
+*(end + 1) = '\0';
+return start;
 }
