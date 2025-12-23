@@ -1,36 +1,40 @@
 #include "shell_headers.h"
-
 /**
- * execute_command - Creates a child process and executes the command
- * @args: Array of arguments (command and its options)
+ * execute_command - Executes a command if found
+ * @args: Array of arguments
  * @env: Environment variables
  */
-
 void execute_command(char **args, char **env)
 {
-pid_t pid;
+    pid_t pid;
+    char *cmd_path;
 
-pid = fork();
-if (pid == -1)
-{
-/* If fork fails, print error and return to main loop */
-perror("fork");
-return;
+    cmd_path = find_command_path(args[0]);
+    if (cmd_path == NULL)
+    {
+        fprintf(stderr, "./hsh: 1: %s: not found\n", args[0]);
+        return;
+    }
+
+    pid = fork();
+    if (pid == -1)
+    {
+        perror("fork");
+        free(cmd_path);
+        return;
+    }
+
+    if (pid == 0)
+    {
+        execve(cmd_path, args, env);
+        perror("execve");
+        exit(1);
+    }
+    else
+    {
+        wait(NULL);
+    }
+
+    free(cmd_path);
 }
 
-if (pid == 0)
-{
-/* Inside Child Process */
-if (execve(args[0], args, env) == -1)
-{
-/* Expected error format for the checker */
-fprintf(stderr, "./hsh: 1: %s: not found\n", args[0]);
-exit(127);
-}
-}
-else
-{
-/* Inside Parent Process: Wait for child to finish */
-wait(NULL);
-}
-}

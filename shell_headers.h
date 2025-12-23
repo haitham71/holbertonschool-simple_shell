@@ -15,5 +15,5 @@ FILE *get_input_stream(int argc, char **argv);
 void execute_command(char **args, char **env);
 void display_shell(FILE *fp);
 void clean_output(char *line, FILE *fp);
-
+char *find_command_path(char *command);
 #endif
