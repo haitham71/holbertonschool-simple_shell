@@ -36,5 +36,6 @@ if (args[0] != NULL)
 execute_command(args, env);
 }
 }
-clean_output(line, fp)
+clean_output(line, fp);
+return(0);
 }
