@@ -31,6 +31,12 @@ line[nread - 1] = '\0';
 
 tokenize(line, args);
 
+if (args[0] == NULL)
+continue;
+
+if (strcmp(args[0], "exit") == 0)
+break;
+
 if (args[0] != NULL)
 {
 execute_command(args, env);
