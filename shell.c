@@ -1,20 +1,9 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <sys/wait.h>
+#include "shell_headers.h"
 
-char *trim_line(char *str)
-{
-    char *start = str;
-    char *end;
-    while (*start == ' ' || *start == '\t') start++;
-    if (*start == '\0') return start;
-    end = start + strlen(start) - 1;
-    while (end > start && (*end == ' ' || *end == '\t')) end--;
-    *(end + 1) = '\0';
-    return start;
-}
+/* This is our simple shell implementation
+@badr & @haitham */
+
+/*main function*/
 
 int main(int argc, char **argv, char **env)
 {
@@ -32,6 +21,7 @@ int main(int argc, char **argv, char **env)
         fp = fopen(argv[1], "r");
         if (fp == NULL) { perror(argv[0]); return (1); }
     }
+
     else fp = stdin;
 
     while (1)
