@@ -14,6 +14,7 @@ size_t len = 0;
 ssize_t nread;
 char *args[64];
 FILE *fp;
+int status = 0;
 
 fp = get_input_stream(argc, argv);
 
@@ -39,9 +40,9 @@ break;
 
 if (args[0] != NULL)
 {
-execute_command(args, env);
+status = execute_command(args, env);
 }
 }
 clean_output(line, fp);
-return(0);
+return(status);
 }
