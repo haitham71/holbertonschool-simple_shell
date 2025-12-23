@@ -8,40 +8,46 @@
  *
  * Return: full path or NULL
  */
-char *find_command_path(char *command)
+char *get_path_value(char **env)
 {
-    struct stat st;
-    char *path, *path_copy, *token, *full_path;
+	int i = 0;
 
-    /*  ^d ^h    ^d   ^e    ^e ^h   ^h    ^e           (/bin/ls  ^e   ^d   ^k) */
-    if (stat(command, &st) == 0)
-        return (strdup(command));
+	while (env[i])
+	{
+		if (strncmp(env[i], "PATH=", 5) == 0)
+			return (env[i] + 5);
+		i++;
+	}
+	return (NULL);
+}
 
-    path = getenv("PATH");
-    if (!path)
-        return (NULL);
+char *find_command_path(char *command, char **env)
+{
+	char *path, *path_copy, *dir;
+	char full_path[1024];
+	struct stat st;
 
-    path_copy = strdup(path);
-    token = strtok(path_copy, ":");
+	if (stat(command, &st) == 0)
+		return (strdup(command));
 
-    while (token)
-    {
-        full_path = malloc(strlen(token) + strlen(command) + 2);
-        if (!full_path)
-            break;
+	path = get_path_value(env);
+	if (!path)
+		return (NULL);
 
-        sprintf(full_path, "%s/%s", token, command);
+	path_copy = strdup(path);
+	dir = strtok(path_copy, ":");
 
-        if (stat(full_path, &st) == 0)
-        {
-            free(path_copy);
-            return (full_path);
-        }
+	while (dir)
+	{
+		sprintf(full_path, "%s/%s", dir, command);
+		if (stat(full_path, &st) == 0)
+		{
+			free(path_copy);
+			return (strdup(full_path));
+		}
+		dir = strtok(NULL, ":");
+	}
 
-        free(full_path);
-        token = strtok(NULL, ":");
-    }
-
-    free(path_copy);
-    return (NULL);
+	free(path_copy);
+	return (NULL);
 }
