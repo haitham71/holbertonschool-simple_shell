@@ -13,5 +13,6 @@ char *trim_line(char *str);
 void tokenize(char *line, char **args);
 FILE *get_input_stream(int argc, char **argv);
 void execute_command(char **args, char **env);
+void display_shell(FILE *fp);
 
 #endif

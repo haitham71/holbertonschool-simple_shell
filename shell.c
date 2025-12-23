@@ -19,7 +19,7 @@ fp = get_input_stream(argc, argv);
 
 while (1)
 {
-    
+
 display_shell(fp);
 
 nread = getline(&line, &len, fp);
@@ -36,8 +36,5 @@ if (args[0] != NULL)
 execute_command(args, env);
 }
 }
-free(line);
-if (fp != stdin)
-fclose(fp);
-return (0);
+clean_output(line, fp)
 }

@@ -8,3 +8,11 @@ printf("cisfun$ ");
 fflush(stdout);
 }
 }
+
+void clean_output(char *line, FILE *fp)
+{
+free(line);
+if (fp != stdin)
+fclose(fp);
+return (0);
+}
