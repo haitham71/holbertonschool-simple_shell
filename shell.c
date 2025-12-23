@@ -1,32 +1,21 @@
 #include "shell_headers.h"
 
-/* This is our simple shell implementation
-@badr & @haitham */
-
-/*main function*/
-
+/**
+ * main - Simple shell entry point
+ * @argc: Argument count
+ * @argv: Argument vector
+ * @env: Environment variables
+ * Return: 0 on success
+ */
 int main(int argc, char **argv, char **env)
 {
 char *line = NULL;
 size_t len = 0;
 ssize_t nread;
 char *args[64];
-pid_t pid;
-char *token;
-int i;
 FILE *fp;
 
-if (argc == 2)
-{
-fp = fopen(argv[1], "r");
-if (fp == NULL)
-{
-perror(argv[0]);
-return (1);
-}
-}
-else
-fp = stdin;
+fp = get_input_stream(argc, argv);
 
 while (1)
 {
@@ -40,35 +29,18 @@ nread = getline(&line, &len, fp);
 if (nread == -1)
 break;
 
-if (line[nread - 1] == '\n') line[nread - 1] = '\0';
+if (nread > 0 && line[nread - 1] == '\n')
+line[nread - 1] = '\0';
 
-i = 0;
-token = strtok(line, " \t");
-while (token != NULL && i < 63)
+tokenize(line, args);
+
+if (args[0] != NULL)
 {
-args[i++] = token;
-token = strtok(NULL, " \t");
-}
-args[i] = NULL;
-
-if (args[0] == NULL)
-continue;
-
-pid = fork();
-
-if (pid == 0)
-{
-if (execve(args[0], args, env) == -1)
-{
-fprintf(stderr, "./hsh: 1: %s: not found\n", args[0]);
-exit(127);
+execute_command(args, env);
 }
 }
-else
-wait(NULL);
-}
-
 free(line);
-if (fp != stdin) fclose(fp);
+if (fp != stdin)
+fclose(fp);
 return (0);
 }
