@@ -4,14 +4,13 @@
 char *get_path_value(char **env)
 {
     int i = 0;
-    size_t len = 5; /* strlen("PATH=") */
 
     while (env[i])
     {
-        if (strncmp(env[i], "PATH=", 5) == 0)
-        return (env[i] + len);
+        if (strncmp(env[i], "PATH", 4) == 0 && env[i][4] == '=')
+        return (env[i] + 5);
         
         i++;
     }
-    return NULL; /* PATH غير موجود */
+    return (NULL); /* PATH غير موجود */
 }
