@@ -1,11 +1,13 @@
 #include "shell_headers.h"
 
 /**
- * find_command_path - يبحث عن المسار الكامل للأمر
- * @command: الأمر المدخل (مثلاً ls أو /bin/ls)
- * @env: مصفوفة متغيرات البيئة
- * Return: المسار الكامل إذا وجد، أو NULL
+ * find_command_path - Finds the full path of a command
+ * @command: The command to find
+ * @env: Environment variables
+ *
+ * Return: Full path of the command or NULL if not found
  */
+
 char *find_command_path(char *command, char **env)
 {
     char *path_env, *path_copy, *dir, *full_path;
