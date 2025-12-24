@@ -1,28 +1,26 @@
 #include "shell_headers.h"
+#include <unistd.h>
 
 /**
  * find_command_path - Finds the full path of a command
- * @command: The command to find
+ * @command: The command
  * @env: Environment variables
  *
- * Return: Full path of the command or NULL if not found
+ * Return: Full path or NULL
  */
-
 char *find_command_path(char *command, char **env)
 {
     char *path_env, *path_copy, *dir, *full_path;
-    struct stat st;
+    size_t len;
 
     if (!command || *command == '\0')
         return (NULL);
 
+    /* Case: command contains '/' */
     if (strchr(command, '/') != NULL)
     {
-        if (stat(command, &st) == 0 && S_ISREG(st.st_mode))
-        {
-            if (st.st_mode & S_IXUSR)
-                return (strdup(command));
-        }
+        if (access(command, X_OK) == 0)
+            return (strdup(command));
         return (NULL);
     }
 
@@ -37,22 +35,20 @@ char *find_command_path(char *command, char **env)
     dir = strtok(path_copy, ":");
     while (dir)
     {
-        full_path = malloc(strlen(dir) + strlen(command) + 2);
+        len = strlen(dir) + strlen(command) + 2;
+        full_path = malloc(len);
         if (!full_path)
         {
             free(path_copy);
             return (NULL);
         }
 
-        sprintf(full_path, "%s/%s", dir, command);
+        snprintf(full_path, len, "%s/%s", dir, command);
 
-        if (stat(full_path, &st) == 0 && S_ISREG(st.st_mode))
+        if (access(full_path, X_OK) == 0)
         {
-            if (st.st_mode & S_IXUSR)
-            {
-                free(path_copy);
-                return (full_path);
-            }
+            free(path_copy);
+            return (full_path);
         }
 
         free(full_path);

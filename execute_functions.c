@@ -1,13 +1,14 @@
 #include "shell_headers.h"
-#include <stdlib.h>
-#include <unistd.h>
-#include <stdio.h>
 #include <sys/wait.h>
+#include <stdio.h>
+#include <unistd.h>
 
 /**
- * execute_command - Executes a command with arguments
+ * execute_command - Executes a command
  * @args: Command arguments
  * @env: Environment variables
+ *
+ * Return: exit status
  */
 int execute_command(char **args, char **env)
 {
@@ -27,19 +28,17 @@ int execute_command(char **args, char **env)
     {
         perror("fork");
         free(cmd_path);
-        return(127);
+        return (127);
     }
 
     if (pid == 0)
     {
-        if (execve(cmd_path, args, env) == -1)
-        {
-            perror("execve");
-            exit(127);
-        }
+        execve(cmd_path, args, env);
+        perror("execve");
+        exit(127);
     }
     else
-    wait(&status);
+        wait(&status);
 
     free(cmd_path);
     return (WEXITSTATUS(status));
