@@ -8,16 +8,18 @@ char *find_command_path(char *command, char **env)
     struct stat st;
     char *full_path = NULL;
 
-    if (!path_env && (command[0] != '/' || command[0] != '.'))
-    return NULL;
+    
 
-    if (command[0] == '/' || command[0] == '.')
+    if (command[0] != '/' || command[0] != '.')
     {
-        if (stat(command, &st) == 0)
+    if (stat(command, &st) == 0)
 
-            return strdup(command);
-        return (NULL);
+        return strdup(command);
+    return (NULL);
     }
+
+    if (!path_env)
+    return NULL;
 
     path_copy = strdup(path_env);
     if (!path_copy)
