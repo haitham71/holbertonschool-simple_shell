@@ -9,7 +9,13 @@ char *get_path_value(char **env)
     while (env[i])
     {
         if (strncmp(env[i], "PATH", 4) == 0)
-            return env[i] + len; /* ترجع من بعد PATH */
+        {
+        while (env[i] + len != '/')
+        {
+        len++;
+        }
+        return(env[i] + len)
+        }
         i++;
     }
     return NULL; /* PATH غير موجود */
