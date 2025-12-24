@@ -8,7 +8,7 @@ char *find_command_path(char *command, char **env)
     struct stat st;
     char *full_path = NULL;
 
-    if (!path_env)
+    if (!path_env && (command[0] != '/' || command[0] != '.'))
     return NULL;
 
     if (command[0] == '/' || command[0] == '.')
