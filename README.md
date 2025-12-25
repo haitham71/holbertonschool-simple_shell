@@ -42,7 +42,7 @@ gcc -Wall -Werror -Wextra -pedantic *.c -o shell
 
 ### Interactive mode
 ```bash
-./hsh
+./shell
 ```
 
 Example:
@@ -53,12 +53,12 @@ cisfun$ pwd
 
 ### Non-interactive mode
 ```bash
-echo "ls -l" | ./hsh
+echo "ls -l" | ./shell
 ```
 
 ### File input
 ```bash
-./hsh commands.txt
+./shell commands.txt
 ```
 
 ---
