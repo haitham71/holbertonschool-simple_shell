@@ -8,6 +8,7 @@
  *
  * Return: Full path or NULL
  */
+
 char *find_command_path(char *command, char **env)
 {
 	char *path_env, *path_copy, *dir, *full_path;

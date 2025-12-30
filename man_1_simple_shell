@@ -1,0 +1,128 @@
+.\" Manpage for hsh - Simple Shell
+.TH HSH 1 "December 30, 2025" "hsh 1.0" "User Commands"
+.SH NAME
+hsh \- a simple UNIX command interpreter
+.SH SYNOPSIS
+.B ./hsh
+[
+.I file
+]
+.SH DESCRIPTION
+.B hsh
+is a simple command-line interpreter that reads commands from the standard input or from a file and executes them. It is designed to function as a minimalist UNIX shell.
+.PP
+The shell parses user input, tokenizes the commands based on whitespace, searches for the executable in the system's
+.B PATH
+(or uses the absolute path provided), and executes the command in a child process.
+.SH INVOCATION
+.B hsh
+can be invoked in two modes:
+.TP
+.B Interactive Mode
+When invoked without arguments and connected to a terminal,
+.B hsh
+prints the prompt
+.B cisfun$
+and waits for the user to type a command.
+.TP
+.B Non-Interactive Mode
+When invoked with a
+.I file
+argument, or when input is piped into it,
+.B hsh
+reads commands from the stream line by line and executes them without printing a prompt.
+.SH COMMAND SYNTAX
+Commands are sequences of words separated by spaces or tabs. The first word is assumed to be the command name, and subsequent words are arguments passed to that command.
+.SH BUILT-IN COMMANDS
+The shell supports the following built-in command:
+.TP
+.B exit
+Terminates the shell immediately. It does not currently accept arguments (exit status codes).
+.SH ENVIRONMENT
+.B hsh
+uses the following environment variables:
+.TP
+.B PATH
+A colon-separated list of directories. When a command is not an absolute path (e.g., does not contain '/'),
+.B hsh
+searches through these directories to find the executable. If
+.B PATH
+is unset, the shell defaults to
+.I /bin:/usr/bin
+.
+.SH EXIT STATUS
+.B hsh
+returns the exit status of the last executed command.
+.TP
+.B 0
+Success (or normal exit).
+.TP
+.B 1
+General error (e.g., failure to open input file).
+.TP
+.B 127
+Command not found or execution failed.
+.SH EXAMPLES
+.B Running interactively:
+.RS
+.nf
+$ ./hsh
+cisfun$ ls -l
+total 16
+-rwxr-xr-x 1 user user 8000 Dec 30 12:00 hsh
+cisfun$ exit
+$
+.fi
+.RE
+.PP
+.B Running a script file:
+.RS
+.nf
+$ cat commands.txt
+/bin/echo "Hello World"
+ls
+$ ./hsh commands.txt
+Hello World
+hsh  commands.txt
+.fi
+.RE
+.SH ERRORS
+If a command is not found,
+.B hsh
+prints an error message to standard error in the following format:
+.PP
+.B ./hsh: 1: command_name: not found
+.SH LIMITATIONS
+.IP \[bu] 2
+The shell does not handle input/output redirection (> or <).
+.IP \[bu]
+The shell does not handle pipes (|).
+.IP \[bu]
+The shell does not handle logical operators (&&, ||, ;).
+.IP \[bu]
+The shell does not handle the
+.B cd
+command to change directories.
+.IP \[bu]
+Command arguments are limited to 64 tokens per line.
+.SH FILES
+.I shell.c
+\- Main entry point
+.br
+.I parsing_functions.c
+\- Input parsing and tokenization
+.br
+.I execute_functions.c
+\- Process creation and execution
+.br
+.I path_functions.c
+\- PATH handling
+.SH AUTHOR
+Badr Alshaya
+Haitham Alshehri 
+.SH SEE ALSO
+.BR sh (1),
+.BR bash (1),
+.BR fork (2),
+.BR execve (2),
+.BR wait (2)
